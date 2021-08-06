@@ -1,45 +1,33 @@
-name: Build and Deploy to Cloud Run
+name: setup-gcloud Unit
 
-
-on:
-  push:
-    branches:
-    - master
-
-env:
-  PROJECT_ID: ${{ secrets.RUN_PROJECT }}
-  RUN_REGION: us-central1
-  SERVICE_NAME: my-service 
+on: [push, pull_request]
 
 jobs:
-  setup-build-deploy:
-    name: Setup, Build, and Deploy
-    runs-on: ubuntu-latest
-
+  run:
+    name: setup-gcloud
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ubuntu-latest, windows-latest, macos-latest]
+        operating-syste: [ubuntu-latest, windows-latest, macos-latest]
+        operating-syst: [ubuntu-latest, windows-latest, macos-latest]
+        operating-sys: [ubuntu-latest, windows-latest, macos-latest]
+        operating-sy: [ubuntu-latest, windows-latest, macos-latest]
+        operating-s: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-    # Setup gcloud CLI
-    - uses: GoogleCloudPlatform/github-actions@master
+    - name: Set Node.js 10.x
+      uses: actions/setup-node@master
       with:
-        version: '290.0.1'
-        service_account_key: ${{ secrets.RUN_SA_KEY }}
-        project_id: ${{ secrets.RUN_PROJECT }}
+        node-version: 10.x
 
-    # Build and push image to Google Container Registry
-    - name: Build
-      run: |-
-        gcloud builds submit \
-          --quiet \
-          --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME"
-    # Deploy image to Cloud Run
-    - name: Deploy
-      run: |-
-        gcloud run deploy "$SERVICE_NAME" \
-          --quiet \
-          --region "$RUN_REGION" \
-          --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
-          --platform "managed" \
-          --allow-unauthenticated
-          
+    - name: npm install
+      run: npm install
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Test
+      run: npm test
