@@ -13,8 +13,6 @@ jobs:
         operating-syste: [ubuntu-latest, windows-latest, macos-latest]
         operating-syst: [ubuntu-latest, windows-latest, macos-latest]
         operating-sys: [ubuntu-latest, windows-latest, macos-latest]
-        operating-sy: [ubuntu-latest, windows-latest, macos-latest]
-        operating-s: [ubuntu-latest, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v2
 
